@@ -1,31 +1,29 @@
 import streamlit as st
 
-# ========= ログイン機能 =========
+# ★ ここにパスワードを直接書く
+PASSWORD = "takaki2226"
+
+
 def check_password():
-    """パスワード認証"""
-    # session_state 初期化
-    if "password_correct" not in st.session_state:
-        st.session_state["password_correct"] = False
+    if "password_ok" not in st.session_state:
+        st.session_state.password_ok = False
 
-    def password_entered():
-        if st.session_state["password_input"] == st.secrets["password"]:
-            st.session_state["password_correct"] = True
-            del st.session_state["password_input"]  # パスワードを削除
-        else:
-            st.session_state["password_correct"] = False
+    if not st.session_state.password_ok:
+        st.text_input("パスワードを入力してください", type="password", key="password_input")
+        if st.button("ログイン"):
+            if st.session_state.password_input == PASSWORD:
+                st.session_state.password_ok = True
+            else:
+                st.error("パスワードが違います")
+        return False
+    else:
+        return True
 
-    if not st.session_state["password_correct"]:
-        st.text_input(
-            "🔑 パスワードを入力してください",
-            type="password",
-            key="password_input",
-            on_change=password_entered
-        )
-        if st.session_state["password_correct"] == False and "password_input" in st.session_state:
-            st.error("パスワードが違います")
-        st.stop()  # 正しく入力されるまでアプリを止める
 
-check_password()
+# --- メイン処理 ---
+if check_password():
+    st.title("在庫管理アプリ")
+    st.write("ログイン成功！")
 
 
 import streamlit as st
