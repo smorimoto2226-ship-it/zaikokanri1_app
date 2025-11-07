@@ -1,22 +1,32 @@
+import streamlit as st
+
 # ========= ログイン機能 =========
 def check_password():
     """パスワード認証"""
+    # session_state 初期化
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = False
+
     def password_entered():
-        if st.session_state["password"] == st.secrets["password"]:
+        if st.session_state["password_input"] == st.secrets["password"]:
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # パスワードを削除
+            del st.session_state["password_input"]  # パスワードを削除
         else:
             st.session_state["password_correct"] = False
 
-    if "password_correct" not in st.session_state:
-        st.text_input("🔑 パスワードを入力してください", type="password", on_change=password_entered, key="password")
-        st.stop()
-    elif not st.session_state["password_correct"]:
-        st.text_input("🔑 パスワードを入力してください", type="password", on_change=password_entered, key="password")
-        st.error("パスワードが違います")
-        st.stop()
+    if not st.session_state["password_correct"]:
+        st.text_input(
+            "🔑 パスワードを入力してください",
+            type="password",
+            key="password_input",
+            on_change=password_entered
+        )
+        if st.session_state["password_correct"] == False and "password_input" in st.session_state:
+            st.error("パスワードが違います")
+        st.stop()  # 正しく入力されるまでアプリを止める
 
 check_password()
+
 
 import streamlit as st
 import pandas as pd
